@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLO Spark Fusion 🔥</title>
+<style>
+:root{
+  --blue:#1264d8;--deep:#083b8f;--light:#eef6ff;--white:#fff;
+  --text:#10213d;--muted:#60708a;--border:#dce9f8;--success:#15803d;
+  --shadow:0 12px 35px rgba(8,59,143,.12);
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);background:#f7fbff}
+button{font:inherit;cursor:pointer;border:0}.hidden{display:none!important}
+.topbar{height:68px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:10}
+.brand{font-weight:900;font-size:1.2rem;color:var(--deep)} .brand span{color:var(--blue)}
+.top-actions{display:flex;gap:10px;align-items:center}.share{background:var(--blue);color:white;padding:10px 16px;border-radius:12px;font-weight:700}
+.app{max-width:1200px;margin:auto;padding:28px 5% 60px}
+.hero{background:linear-gradient(135deg,#073b91,#1782ef);color:#fff;border-radius:28px;padding:42px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"🔥";position:absolute;font-size:120px;right:5%;bottom:-20px;opacity:.13}
+.hero h1{font-size:clamp(2rem,5vw,4rem);margin:0 0 10px}.hero p{max-width:650px;font-size:1.05rem;line-height:1.7;opacity:.94}
+.cta{background:#fff;color:var(--deep);padding:13px 20px;border-radius:12px;font-weight:800;margin-top:8px}
+.section{margin-top:30px}.section h2{margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 6px 20px rgba(8,59,143,.06)}
+.card h3{margin:8px 0}.card p{color:var(--muted);line-height:1.5}.icon{font-size:1.8rem}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}.nav button{background:#eaf3ff;color:var(--deep);padding:10px 14px;border-radius:10px;font-weight:700}.nav button.active{background:var(--blue);color:white}
+.page{display:none}.page.active{display:block}
+.stat{display:flex;justify-content:space-between;align-items:center}.number{font-size:2rem;font-weight:900;color:var(--blue)}
+.subject{transition:.2s}.subject:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.back{background:transparent;color:var(--blue);font-weight:800;margin-bottom:15px}
+.question{font-size:1.15rem;font-weight:800;line-height:1.5}.options{display:grid;gap:10px;margin-top:16px}.option{padding:14px;border:2px solid var(--border);border-radius:12px;text-align:left;background:#fff}.option.selected{border-color:var(--blue);background:var(--light)}
+.result{margin-top:16px;padding:16px;border-radius:14px;background:#edf9f1;border:1px solid #bce5c8}.mistake{background:#fff5e8;border:1px solid #f4d39d;padding:16px;border-radius:14px;margin-top:12px}
+.primary{background:var(--blue);color:#fff;padding:12px 18px;border-radius:11px;font-weight:800}.secondary{background:#eaf3ff;color:var(--deep);padding:12px 18px;border-radius:11px;font-weight:800}
+.modal{position:fixed;inset:0;background:rgba(2,25,60,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:30}.modal-box{background:white;border-radius:22px;max-width:500px;width:100%;padding:28px}.modal-box h2{margin-top:0}
+.input{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;margin:8px 0 14px}
+.chat{height:330px;overflow:auto;background:#f5f9ff;border-radius:15px;padding:15px}.bubble{padding:11px 14px;border-radius:14px;margin:8px 0;max-width:85%;line-height:1.45}.bot{background:#e4f0ff}.user{background:#1264d8;color:white;margin-left:auto}
+.chatrow{display:flex;gap:8px;margin-top:10px}.chatrow input{flex:1}
+.progress{height:10px;background:#e5edf7;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue);width:72%}
+footer{text-align:center;color:var(--muted);padding:30px}
+@media(max-width:650px){.hero{padding:28px}.topbar{padding:0 4%}.app{padding:20px 4% 45px}}
+
+/* Section-specific accents: dashboard stays blue + white, other areas may vary. */
+#academics .card.subject:nth-child(1){border-top:4px solid #22c55e}
+#academics .card.subject:nth-child(2){border-top:4px solid #f59e0b}
+#academics .card.subject:nth-child(3){border-top:4px solid #a855f7}
+#academics .card.subject:nth-child(4){border-top:4px solid #ec4899}
+#hub .card:nth-child(1){border-top:4px solid #f59e0b}
+#hub .card:nth-child(2){border-top:4px solid #8b5cf6}
+#practice .card{border-top:4px solid #06b6d4}
+#report .card{border-top:4px solid #3b82f6}
+#ai .card{border-top:4px solid #10b981}
+#ai .bot{background:#eafaf4}
+#ai .user{background:#1264d8}
+
+/* Defense-ready visual polish */
+body{background:linear-gradient(135deg,#f8fbff,#eef5ff 55%,#faf7ff);}
+.card{transition:transform .18s ease,box-shadow .18s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,23,42,.10);}
+.primary{box-shadow:0 7px 18px rgba(37,99,235,.18);}
+.spark-title{font-weight:900;background:linear-gradient(90deg,#2563eb,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+.badge-pill{padding:10px 13px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;font-weight:700;font-size:.88rem;}
+.level-pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:.78rem;font-weight:800;}
+.feature-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0;}
+.feature-mini{padding:16px;border-radius:18px;background:rgba(255,255,255,.82);border:1px solid #e2e8f0;}
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">FLO <span>Spark</span> Fusion 🔥</div>
+  <div class="top-actions"><button class="share" onclick="shareApp()">🔗 Share</button></div>
+</header>
+
+<main class="app">
+  <section class="hero">
+    <h1>FLO Spark Fusion 🔥</h1>
+    <p>Where learning meets insight. Practice, understand your mistakes, track your progress, and get help from Flo AI.</p>
+    <button class="cta" onclick="showPage('academics')">Start Learning →</button>
+  </section>
+
+  <nav class="nav">
+    <button onclick="showPage('home')" class="active">🏠 Home</button>
+    <button onclick="showPage('academics')">📚 Academics</button>
+    <button onclick="showPage('hub')">🧠 Learning Hub</button>
+    <button onclick="showPage('practice')">✏️ Practice</button>
+    <button onclick="showPage('report')">📊 My Report</button>
+    <button onclick="showPage('mistakes')">🔎 Mistake Analysis</button>
+    <button onclick="showPage('ai')">🤖 Flo AI</button>
+    <button onclick="showPage('sharepage')">🔗 Share</button>
+  </nav>
+
+  <section id="home" class="page active">
+    <div class="section">
+      <h2>Welcome back 👋</h2>
+      <div class="grid">
+        <div class="card stat"><div><small>Questions Practiced</small><div class="number">24</div></div><span class="icon">✏️</span></div>
+        <div class="card stat"><div><small>Current Score</small><div class="number">78%</div></div><span class="icon">📈</span></div>
+        <div class="card stat"><div><small>Topics Improved</small><div class="number">8</div></div><span class="icon">🔥</span></div>
+      </div>
+    </div>
+    <div class="section grid">
+      <div class="card"><div class="icon">⚡</div><h3>Quick Practice</h3><p>Jump straight into a practice question.</p><button class="primary" onclick="showPage('practice')">Practice Now</button></div>
+      <div class="card"><div class="icon">🤖</div><h3>Ask Flo AI</h3><p>Get a hint, explanation, or example when you're stuck.</p><button class="primary" onclick="showPage('ai')">Ask Flo</button></div>
+      <div class="card"><div class="icon">🔗</div><h3>Share FloSpark</h3><p>Send the app to a classmate.</p><button class="secondary" onclick="shareApp()">Share App</button></div>
+    </div>
+  </section>
+
+  <section id="academics" class="page">
+    <div id="academicsHome">
+      <h2>📚 Academics</h2>
+      <p>Choose your department to explore subjects and Q&A practice.</p>
+      <div class="grid">
+        <div class="card subject" onclick="openSubjects('Science')">
+          <div class="icon">🔬</div><h3>Science</h3>
+          <p>Mathematics, Biology, Chemistry, Physics and more.</p>
+          <button class="primary">Open Science →</button>
+        </div>
+        <div class="card subject" onclick="openSubjects('Social Science')">
+          <div class="icon">🌍</div><h3>Social Science</h3>
+          <p>Economics, Government, Geography, Accounting and more.</p>
+          <button class="primary">Open Social Science →</button>
+        </div>
+        <div class="card subject" onclick="openSubjects('Arts')">
+          <div class="icon">🎨</div><h3>Arts</h3>
+          <p>Literature, Government, History, Languages and more.</p>
+          <button class="primary">Open Arts →</button>
+        </div>
+        <div class="card subject" onclick="openSubjects('Electives')">
+          <div class="icon">💡</div><h3>Electives</h3>
+          <p>Creative, technology and practical learning areas.</p>
+          <button class="primary">Open Electives →</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="departmentView" class="hidden">
+      <button class="secondary" onclick="showAcademicsHome()">← Back to Departments</button>
+      <div id="subjects" class="section"></div>
+    </div>
+
+    <div id="subjectView" class="hidden">
+      <button class="secondary" onclick="backToDepartment()">← Back to Subjects</button>
+      <div id="subjectContent" class="section"></div>
+    </div>
+  </section>
+
+  <section id="hub" class="page">
+    <h2>🧠 Learning Hub</h2>
+    <div class="grid">
+      <div class="card"><div class="icon">📖</div><h3>Vocabulary Development</h3><p>Question & Answer practice for vocabulary growth.</p><button class="primary" onclick="startQuiz('Vocabulary Development')">Open Q&A</button></div>
+      <div class="card"><div class="icon">🧩</div><h3>Critical Thinking</h3><p>Challenge your reasoning with question-based practice.</p><button class="primary" onclick="startQuiz('Critical Thinking')">Open Q&A</button></div>
+    </div>
+  </section>
+
+  <section id="practice" class="page">
+    <h2>✏️ Practice</h2>
+    <div class="card">
+      <div id="quizArea">
+        <p>Select a learning area to start:</p>
+        <div class="grid">
+          <button class="secondary" onclick="startQuiz('Mathematics')">➗ Mathematics</button>
+          <button class="secondary" onclick="startQuiz('English Language')">📘 English Language</button>
+          <button class="secondary" onclick="startQuiz('Biology')">🧬 Biology</button>
+          <button class="secondary" onclick="startQuiz('Chemistry')">⚗️ Chemistry</button>
+          <button class="secondary" onclick="startQuiz('Physics')">⚡ Physics</button>
+          <button class="secondary" onclick="startQuiz('Economics')">💰 Economics</button>
+          <button class="secondary" onclick="startQuiz('Government')">🏛️ Government</button>
+          <button class="secondary" onclick="startQuiz('Geography')">🌍 Geography</button>
+          <button class="secondary" onclick="startQuiz('Accounting')">🧾 Accounting</button>
+          <button class="secondary" onclick="startQuiz('Computer Science')">💻 Computer Science</button>
+          <button class="secondary" onclick="startQuiz('Vocabulary Development')">📖 Vocabulary Development</button>
+          <button class="secondary" onclick="startQuiz('Critical Thinking')">🧩 Critical Thinking</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mistakes" class="page">
+    <h2>🔎 Mistake Analysis</h2>
+    <p>FLO Spark Fusion looks at common error patterns so students can understand why an answer went wrong.</p>
+    <div class="grid">
+      <div class="card"><div class="icon">🧮</div><h3>Calculation Error</h3><p>A mistake happened while working with numbers or operations.</p></div>
+      <div class="card"><div class="icon">🧠</div><h3>Concept Error</h3><p>The main idea or meaning of the topic was misunderstood.</p></div>
+      <div class="card"><div class="icon">📐</div><h3>Formula Error</h3><p>The wrong formula or rule was selected or applied.</p></div>
+      <div class="card"><div class="icon">🔍</div><h3>Interpretation Error</h3><p>The question or information was interpreted incorrectly.</p></div>
+      <div class="card"><div class="icon">📚</div><h3>Knowledge Gap</h3><p>The student needs to learn or revise the underlying fact or skill.</p></div>
+    </div>
+    <div class="section card">
+      <h3>How it works</h3>
+      <p>Each demo question has a predefined error pattern. When a student submits a wrong answer, the system displays the associated pattern and a helpful hint.</p>
+      <button class="primary" onclick="showPage('practice')">Try a Practice Question →</button>
+    </div>
+  </section>
+
+  <section id="sharepage" class="page">
+    <h2>🔗 Share FLO Spark Fusion</h2>
+    <div class="card">
+      <p>Share this learning platform with your classmates, teachers, or project panel.</p>
+      <p><b>Current website link:</b></p>
+      <input class="input" id="shareUrl" readonly>
+      <div class="nav">
+        <button class="primary" onclick="shareApp()">📤 Share App</button>
+        <button class="secondary" onclick="copyShareLink()">📋 Copy Link</button>
+      </div>
+      <p id="shareStatus"></p>
+    </div>
+  </section>
+
+  <section id="report" class="page">
+    <h2>📊 My Report</h2>
+    <div class="card" style="margin:18px 0">
+      <h3>🏅 Spark Badges</h3>
+      <p>Complete learning activities to unlock badges.</p>
+      <div class="badge-row">
+        <div class="badge-pill">🌟 First Step</div>
+        <div class="badge-pill">🔥 On Fire</div>
+        <div class="badge-pill">🧮 Math Explorer</div>
+        <div class="badge-pill">🧠 Mistake Detective</div>
+        <div class="badge-pill">🎯 Accuracy Ace</div>
+        <div class="badge-pill">🏆 Mastery Unlocked</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><small>Overall Score</small><div class="number">78%</div><div class="progress"><span></span></div></div>
+      <div class="card"><small>Strong Area</small><h3>Concept Recall</h3><p>You are showing consistent understanding in recent practice.</p></div>
+      <div class="card"><small>Revision Focus</small><h3>Calculation & Interpretation</h3><p>Practice more questions and review explanations.</p></div>
+    </div>
+    <div class="section card"><h3>Mistake Pattern</h3><p>Calculation Error — 3 questions</p><p>Concept Error — 2 questions</p><p>Interpretation Error — 1 question</p></div>
+  </section>
+
+  <section id="ai" class="page">
+    <h2>🤖 Flo AI</h2>
+    <div class="card">
+      <div id="chat" class="chat">
+        <div class="bubble bot">Hi! I'm Flo AI 🔥. I can give you a hint, explain a concept, explain a mistake, or give you an example. What are you working on?</div>
+      </div>
+      <div class="chatrow">
+        <input id="chatInput" class="input" placeholder="Type your question..." onkeydown="if(event.key==='Enter') sendChat()">
+        <button class="primary" onclick="sendChat()">Send</button>
+      </div>
+      <div class="nav">
+        <button onclick="quickChat('Give me a hint')">💡 Hint</button>
+        <button onclick="quickChat('Explain this')">📘 Explain</button>
+        <button onclick="quickChat('Explain my mistake')">🔎 My Mistake</button>
+        <button onclick="quickChat('Give me an example')">📝 Example</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>FLO Spark Fusion 🔥</footer>
+
+<div id="modal" class="modal hidden" onclick="if(event.target===this) closeModal()">
+  <div class="modal-box">
+    <h2>🔐 Welcome to FloSpark Fusion</h2>
+    <p>Choose how you want to enter the prototype.</p>
+    <button class="primary" style="width:100%;margin:6px 0" onclick="login('Google')">Continue with Google</button>
+    <button class="secondary" style="width:100%;margin:6px 0" onclick="login('Guest')">Continue as Guest</button>
+  </div>
+</div>
+
+<script>
+const questions = {
+  "Mathematics": [
+    {q:"Solve: 2x + 5 = 15. What is x?", options:["5","10","7.5","2"], answer:0, type:"Calculation Error", explanation:"Subtract 5 from both sides, then divide by 2.", topic:"Number Processes"},
+    {q:"What is 25% of 80?", options:["15","20","25","30"], answer:1, type:"Calculation Error", explanation:"25% means 25/100, so 25% of 80 is 20.", topic:"Percentages"},
+    {q:"Simplify: 2³ × 2².", options:["2⁵","4⁶","2⁶","2¹"], answer:0, type:"Formula Error", explanation:"When multiplying powers with the same base, add the indices: 3 + 2 = 5.", topic:"Indices"},
+    {q:"Convert 101₂ to base 10.", options:["3","4","5","6"], answer:2, type:"Interpretation Error", explanation:"101₂ = 1×4 + 0×2 + 1×1 = 5.", topic:"Number Bases"},
+    {q:"If log₁₀(100) = x, what is x?", options:["1","2","10","100"], answer:1, type:"Knowledge Gap", explanation:"10² = 100, so log₁₀(100) = 2.", topic:"Logarithms"}
+  ],
+  "English Language": [
+    {q:"Choose the word closest in meaning to 'rapid'.", options:["Slow","Fast","Heavy","Quiet"], answer:1, type:"Knowledge Gap", explanation:"Rapid means happening quickly or fast.", topic:"Vocabulary"},
+    {q:"Choose the correct sentence.", options:["She don't like rice.","She doesn't like rice.","She doesn't likes rice.","She not like rice."], answer:1, type:"Concept Error", explanation:"With 'she', use 'doesn't' followed by the base verb 'like'.", topic:"Grammar"},
+    {q:"What is the opposite of 'ancient'?", options:["Old","Modern","Historic","Past"], answer:1, type:"Knowledge Gap", explanation:"Modern means relating to the present or recent times.", topic:"Vocabulary"},
+    {q:"Which word is a noun?", options:["Beautiful","Quickly","Teacher","Run"], answer:2, type:"Concept Error", explanation:"Teacher is a noun because it names a person.", topic:"Parts of Speech"},
+    {q:"Choose the correctly punctuated sentence.", options:["John said I am ready.","John said, 'I am ready.'","John said 'I am ready'","John, said I am ready."], answer:1, type:"Interpretation Error", explanation:"A comma introduces the direct quotation and the quotation is enclosed in quotation marks.", topic:"Punctuation"}
+  ],
+  "Biology": [
+    {q:"Which organelle is mainly responsible for producing ATP in a cell?", options:["Nucleus","Mitochondrion","Ribosome","Cell wall"], answer:1, type:"Concept Error", explanation:"Mitochondria are associated with most cellular ATP production.", topic:"Cell Biology"},
+    {q:"Which process do green plants use to make food?", options:["Respiration","Photosynthesis","Digestion","Excretion"], answer:1, type:"Knowledge Gap", explanation:"Green plants use photosynthesis to make food using light energy.", topic:"Nutrition"},
+    {q:"What gas is released during photosynthesis?", options:["Carbon dioxide","Nitrogen","Oxygen","Hydrogen"], answer:2, type:"Knowledge Gap", explanation:"Oxygen is released as a product of photosynthesis.", topic:"Photosynthesis"}
+  ],
+  "Chemistry": [
+    {q:"What is the chemical symbol for oxygen?", options:["Ox","O","Og","C"], answer:1, type:"Knowledge Gap", explanation:"The chemical symbol for oxygen is O.", topic:"Elements"},
+    {q:"A substance with a pH below 7 is generally what?", options:["Acidic","Neutral","Alkaline","Metallic"], answer:0, type:"Concept Error", explanation:"Solutions with pH below 7 are acidic.", topic:"Acids and Bases"},
+    {q:"Which particle has a negative charge?", options:["Proton","Neutron","Electron","Nucleus"], answer:2, type:"Knowledge Gap", explanation:"Electrons carry a negative electric charge.", topic:"Atomic Structure"}
+  ],
+  "Physics": [
+    {q:"What is the SI unit of force?", options:["Joule","Watt","Newton","Pascal"], answer:2, type:"Knowledge Gap", explanation:"Force is measured in newtons (N).", topic:"Force"},
+    {q:"Which instrument measures temperature?", options:["Barometer","Thermometer","Ammeter","Voltmeter"], answer:1, type:"Knowledge Gap", explanation:"A thermometer measures temperature.", topic:"Measurement"},
+    {q:"What is speed equal to?", options:["Distance × time","Distance ÷ time","Time ÷ distance","Mass ÷ volume"], answer:1, type:"Formula Error", explanation:"Speed is distance travelled divided by time taken.", topic:"Motion"}
+  ],
+  "Economics": [
+    {q:"What is scarcity?", options:["Unlimited resources","Limited resources relative to wants","Free goods only","High prices only"], answer:1, type:"Concept Error", explanation:"Scarcity exists because resources are limited while human wants are unlimited.", topic:"Basic Economic Problems"},
+    {q:"What is the reward for labour?", options:["Rent","Interest","Wages","Profit"], answer:2, type:"Knowledge Gap", explanation:"Wages are the reward for labour.", topic:"Factors of Production"},
+    {q:"What does demand generally mean?", options:["Desire only","Desire backed by willingness and ability to pay","Production only","Saving money"], answer:1, type:"Concept Error", explanation:"Demand is a desire for a good backed by willingness and ability to pay.", topic:"Demand"}
+  ],
+  "Government": [
+    {q:"What is a constitution primarily concerned with?", options:["Rules for games","The framework of government","Weather patterns","Business profits"], answer:1, type:"Concept Error", explanation:"A constitution sets out the framework, powers, and principles of government.", topic:"Constitution"},
+    {q:"Which arm of government makes laws?", options:["Executive","Legislature","Judiciary","Civil service"], answer:1, type:"Knowledge Gap", explanation:"The legislature is responsible for making laws.", topic:"Arms of Government"},
+    {q:"What is democracy commonly based on?", options:["Rule by one person","Participation of the people","Military rule only","Inheritance only"], answer:1, type:"Concept Error", explanation:"Democracy involves participation of citizens in government, directly or through representatives.", topic:"Democracy"}
+  ],
+  "Computer Science": [
+    {q:"Which of these is an example of an input device?", options:["Monitor","Printer","Keyboard","Speaker"], answer:2, type:"Knowledge Gap", explanation:"A keyboard sends data into a computer, so it is an input device.", topic:"Computer Hardware"},
+    {q:"What does CPU stand for?", options:["Central Processing Unit","Computer Power Unit","Central Program Utility","Control Processing User"], answer:0, type:"Knowledge Gap", explanation:"CPU stands for Central Processing Unit.", topic:"Computer Basics"},
+    {q:"Which of these is used to store files?", options:["Hard drive","Monitor","Keyboard","Mouse"], answer:0, type:"Concept Error", explanation:"A hard drive is a storage device used to store files and data.", topic:"Storage"}
+  ],
+  "Vocabulary Development": [
+    {q:"What does 'concise' most nearly mean?", options:["Brief and clear","Very loud","Difficult","Unrelated"], answer:0, type:"Knowledge Gap", explanation:"Concise means expressing something clearly in few words.", topic:"Vocabulary"},
+    {q:"What does 'generous' mean?", options:["Willing to give","Always angry","Very quiet","Unable to decide"], answer:0, type:"Knowledge Gap", explanation:"A generous person is willing to give or share freely.", topic:"Vocabulary"},
+    {q:"What is a synonym for 'assist'?", options:["Help","Hurt","Ignore","Delay"], answer:0, type:"Knowledge Gap", explanation:"Assist means to help.", topic:"Synonyms"}
+  ],
+  "Critical Thinking": [
+    {q:"If all A are B, and all B are C, what follows?", options:["All C are A","All A are C","No A are C","Nothing follows"], answer:1, type:"Interpretation Error", explanation:"If A is contained in B and B is contained in C, A is also contained in C.", topic:"Logical Reasoning"},
+    {q:"A student studies every day and improves. What is the most reasonable conclusion?", options:["Practice can support improvement","Studying always guarantees perfect scores","Practice has no effect","The student never makes mistakes"], answer:0, type:"Interpretation Error", explanation:"The evidence supports the conclusion that regular practice can support improvement.", topic:"Reasoning"},
+    {q:"Which question best checks evidence before accepting a claim?", options:["Who said it?","What evidence supports it?","Do I like it?","Is it popular?"], answer:1, type:"Knowledge Gap", explanation:"Checking supporting evidence is a key part of critical thinking.", topic:"Evidence"}
+  ]
+};
+
+let current=null, selected=null, currentIndex=0, quizScore=0;
+function showPage(id){
+  const target=document.getElementById(id);
+  if(!target){ console.warn('Page not found:', id); return; }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  target.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>{
+    if((b.getAttribute('onclick')||'').includes("showPage('"+id+"')")) b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const departmentSubjects = {
+  Science: [
+    ["Mathematics","➗","Numbers, algebra, equations and problem solving."],
+    ["English Language","📘","Grammar, comprehension, vocabulary and communication."],
+    ["Biology","🧬","Living things, cells, nutrition and biological processes."],
+    ["Chemistry","⚗️","Matter, atoms, reactions and chemical calculations."],
+    ["Physics","⚡","Mechanics, optics, electricity and physical laws."],
+    ["Agricultural Science","🌱","Crops, animals, soil and agricultural practices."],
+    ["Computer Science","💻","Computing concepts, algorithms and digital skills."]
+  ],
+  "Social Science": [
+    ["Mathematics","➗","Core mathematics and quantitative reasoning."],
+    ["English Language","📘","Language skills, comprehension and communication."],
+    ["Economics","💰","Scarcity, demand, supply, markets and production."],
+    ["Government","🏛️","Constitution, government systems and civic ideas."],
+    ["Geography","🌍","People, places, environment and physical processes."],
+    ["Accounting","🧾","Records, transactions, accounts and financial information."],
+    ["Commerce","🏪","Trade, business activities and commercial practices."]
+  ],
+  Arts: [
+    ["English Language","📘","Language, comprehension, grammar and writing."],
+    ["Mathematics","➗","Core mathematics and problem solving."],
+    ["Literature in English","📚","Literary genres, themes, characters and analysis."],
+    ["Government","🏛️","Constitution, institutions and civic ideas."],
+    ["History","🏺","People, events, societies and historical change."],
+    ["CRS / IRS","🕊️","Religious studies, values and traditions."],
+    ["Economics","💰","Scarcity, choice, markets and economic ideas."]
+  ],
+  Electives: [
+    ["AI, Vibing & Coding","🤖","Computational thinking, coding and AI concepts."],
+    ["CCP — Craft & Catering Practice","🍳","Craft skills, food preparation and practical work."],
+    ["Content Creating","🎥","Planning, creating and presenting digital content."],
+    ["Cosmetology","💇","Personal care, beauty and practical skills."],
+    ["Fashion & Fashion Designing","🧵","Design, fabrics, measurements and garment ideas."]
+  ]
+};
+
+
+const mathTopics = ["Number Processes","Fractions","Decimals","Percentages","Indices","Logarithms","Number Bases"];
+const learningLevels = ["Beginner","Intermediate","Advanced","Mastery"];
+
+const subjectQA = {
+  "Mathematics": [
+    ["Solve: 2x + 5 = 15. What is x?","5","Calculation Error","Subtract 5 from both sides, then divide by 2."],
+    ["Simplify: 3x + 2x","5x","Concept Error","Combine like terms: 3x + 2x = 5x."],
+    ["Find 25% of 80.","20","Calculation Error","Convert 25% to 0.25 and multiply by 80."],
+    ["Simplify: 2³ × 2².","2⁵","Formula Error","For the same base, add the indices when multiplying powers."],
+    ["Convert 101₂ to base 10.","5","Interpretation Error","Use place values: 1×2² + 0×2¹ + 1×2⁰."],
+    ["If log₁₀(100) = x, find x.","2","Knowledge Gap","Ask which power of 10 gives 100."]
+  ],
+  "Biology": [
+    ["Which organelle is known as the powerhouse of the cell?","Mitochondrion","Concept Error","It is associated with cellular energy production."]
+  ],
+  "Chemistry": [
+    ["What is the smallest unit of an element that retains its chemical properties?","Atom","Knowledge Gap","Think about the basic building block of an element."]
+  ],
+  "Physics": [
+    ["Which branch of physics studies light and its behavior?","Optics","Knowledge Gap","Think about reflection, refraction and lenses."]
+  ],
+  "Government": [
+    ["What is a constitution?","A framework of government","Concept Error","It sets out fundamental rules and structures for government."]
+  ],
+  "Computer Science": [
+    ["Which device is commonly used to enter text into a computer?","Keyboard","Knowledge Gap","It has keys used to type characters."]
+  ],
+  "Vocabulary Development": [
+    ["What does 'concise' mean?","Brief and clear","Knowledge Gap","Think: using few words without losing the main idea."]
+  ],
+  "Critical Thinking": [
+    ["If all A are B and all B are C, what can we conclude about A and C?","All A are C","Interpretation Error","Follow the relationship from A to B to C."]
+  ],
+  "English Language": [
+    ["Choose the word closest in meaning to 'rapid'.","Fast","Knowledge Gap","Rapid means happening quickly."]
+  ],
+  "Economics": [
+    ["What is scarcity?","Limited resources compared with unlimited wants","Concept Error","Economics studies choices created by scarcity."]
+  ],
+  "Geography": [
+    ["What does a map scale help us determine?","The relationship between map distance and real distance","Interpretation Error","Scale connects a measurement on a map to the real world."]
+  ],
+  "Accounting": [
+    ["What is a transaction in accounting?","A financial event recorded by a business","Concept Error","Transactions change the financial position of a business."]
+  ],
+  "Literature in English": [
+    ["What is a character in a literary work?","A person or figure presented in the work","Knowledge Gap","Characters take part in the events of a story or drama."]
+  ],
+  "History": [
+    ["What does history study?","Past events and human experiences","Concept Error","History examines evidence about the human past."]
+  ],
+  "CRS / IRS": [
+    ["What is a moral value?","A principle that guides right conduct","Concept Error","Values help guide decisions and behaviour."]
+  ],
+  "AI, Vibing & Coding": [
+    ["What is an algorithm?","A step-by-step procedure for solving a problem","Knowledge Gap","Algorithms give ordered steps for a task."]
+  ],
+  "CCP — Craft & Catering Practice": [
+    ["Why is food hygiene important?","To reduce the risk of contamination and illness","Knowledge Gap","Clean handling helps keep food safe."]
+  ],
+  "Content Creating": [
+    ["What is a target audience?","The group of people a piece of content is made for","Interpretation Error","Knowing the audience helps shape the content."]
+  ],
+  "Cosmetology": [
+    ["Why is hygiene important in cosmetology?","To help protect clients and practitioners from contamination","Knowledge Gap","Clean tools and practices support safe services."]
+  ],
+  "Fashion & Fashion Designing": [
+    ["What is a pattern in fashion design?","A template used to cut fabric pieces","Knowledge Gap","Patterns help shape fabric into a garment."]
+  ]
+};
+
+function showAcademicsHome(){
+  document.getElementById('academicsHome').classList.remove('hidden');
+  document.getElementById('departmentView').classList.add('hidden');
+  document.getElementById('subjectView').classList.add('hidden');
+}
+
+function openSubjects(dept){
+  document.getElementById('academicsHome').classList.add('hidden');
+  document.getElementById('subjectView').classList.add('hidden');
+  document.getElementById('departmentView').classList.remove('hidden');
+
+  const data = departmentSubjects[dept] || [];
+  document.getElementById('subjects').innerHTML = `
+    <div class="section-head">
+      <div>
+        <small>Department</small>
+        <h2>${dept}</h2>
+        <p>Select a subject to open its learning page and Q&A.</p>
+      </div>
+    </div>
+    <div class="grid">
+      ${data.map(([name,icon,desc]) => `
+        <div class="card subject">
+          <div class="icon">${icon}</div>
+          <h3>${name}</h3>
+          <p>${desc}</p>
+          <button class="primary" onclick="openSubjectPage('${name.replace(/'/g,"\'")}','${dept.replace(/'/g,"\'")}')">Open Subject →</button>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function backToDepartment(){
+  document.getElementById('subjectView').classList.add('hidden');
+  document.getElementById('departmentView').classList.remove('hidden');
+}
+
+function openSubjectPage(subject, dept){
+  document.getElementById('departmentView').classList.add('hidden');
+  document.getElementById('subjectView').classList.remove('hidden');
+
+  const qs = subjectQA[subject] || [{
+    q:`What would you like to learn in ${subject}?`,
+    answer:"Use the practice section to explore questions.",
+    type:"Knowledge Gap",
+    explanation:"This subject page is ready for more school-specific Q&A."
+  }];
+
+  const topicNames = {
+    "Mathematics":mathTopics,
+    "English Language":["Grammar","Comprehension","Vocabulary","Writing"],
+    "Biology":["Cell Biology","Nutrition","Living Things","Ecology"],
+    "Chemistry":["Matter","Atomic Structure","Chemical Reactions","Calculations"],
+    "Physics":["Mechanics","Optics","Electricity","Measurement"],
+    "Agricultural Science":["Crops","Soil","Farm Tools","Livestock"],
+    "Computer Science":["Computer Basics","Algorithms","Programming","Digital Skills"],
+    "Economics":["Scarcity","Demand & Supply","Production","Markets"],
+    "Government":["Constitution","Government Systems","Citizenship","Institutions"],
+    "Geography":["Map Reading","Physical Geography","Human Geography","Environment"],
+    "Accounting":["Accounting Concepts","Transactions","Ledger","Financial Records"],
+    "Commerce":["Trade","Business Units","Communication","Distribution"],
+    "Literature in English":["Prose","Poetry","Drama","Literary Devices"],
+    "History":["People & Events","Societies","Change Over Time","Historical Sources"],
+    "CRS / IRS":["Beliefs","Values","Traditions","Moral Lessons"],
+    "AI, Vibing & Coding":["Computational Thinking","Coding Basics","AI Concepts","Projects"],
+    "CCP — Craft & Catering Practice":["Craft","Food Safety","Cooking","Practical Skills"],
+    "Content Creating":["Content Planning","Writing","Video","Digital Publishing"],
+    "Cosmetology":["Hair Care","Skin Care","Beauty Skills","Safety"],
+    "Fashion & Fashion Designing":["Design","Fabrics","Measurements","Garment Making"]
+  }[subject] || ["Introduction","Key Concepts","Practice","Revision"];
+
+  document.getElementById('subjectContent').innerHTML = `
+    <small>${dept}</small>
+    <h2>${subject}</h2>
+    <p>Your ${subject} learning page. Choose a topic or try the Q&A below.</p>
+
+    <div class="feature-strip">
+      ${learningLevels.map((level,i)=>`<div class="feature-mini"><span class="level-pill">${i+1}. ${level}</span><br><small>Practice at ${level} level.</small></div>`).join('')}
+    </div>
+    <h3>📌 Topics</h3>
+    <div class="grid">
+      ${topicNames.map((t,i)=>`
+        <div class="card">
+          <h3>${i+1}. ${t}</h3>
+          <p>Study this topic, then test your understanding.</p>
+          <button class="secondary" onclick="startQuiz('${subject.replace(/'/g,"\'")}')">Practice Q&A</button>
+        </div>`).join('')}
+    </div>
+
+    <h3 style="margin-top:28px">❓ Q&A</h3>
+    <div class="grid">
+      ${qs.map((item,i)=>`
+        <div class="card">
+          <small>Question ${i+1}</small>
+          <h3>${item[0]}</h3>
+          <button class="primary" onclick="toggleAnswer(this)">Show Answer</button>
+          <div class="answer hidden">
+            <p><b>Answer:</b> ${item[1]}</p>
+            <p><b>Common mistake:</b> ${item[2]}</p>
+            <p><b>Hint:</b> ${item[3]}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:20px">
+      <button class="primary" onclick="startQuiz('${subject.replace(/'/g,"\'")}')">✏️ Start Practice</button>
+    </div>`;
+}
+
+function toggleAnswer(button){
+  const answer = button.nextElementSibling;
+  answer.classList.toggle('hidden');
+  button.textContent = answer.classList.contains('hidden') ? 'Show Answer' : 'Hide Answer';
+}
+
+function startQuiz(subject){
+  showPage('practice');
+  currentIndex=0; quizScore=0; selected=null;
+  const bank=questions[subject];
+  if(!bank){
+    document.getElementById('quizArea').innerHTML=`<small>${subject}</small><div class="mistake"><b>Practice questions coming soon.</b><p>This subject is available in the learning area, but its quiz questions are still being prepared.</p></div>`;
+    return;
+  }
+  renderQuestion(subject);
+}
+function renderQuestion(subject){
+  const bank=questions[subject];
+  current={...bank[currentIndex], subject}; selected=null;
+  document.getElementById('quizArea').innerHTML=`<div class="quiz-top"><small>${subject}</small><strong>Question ${currentIndex+1} of ${bank.length}</strong></div><div class="progress"><span style="width:${((currentIndex+1)/bank.length)*100}%"></span></div><p class="question">${current.q}</p><small>Topic: ${current.topic||'General'} · Difficulty: ${currentIndex<2?'Beginner':currentIndex<4?'Intermediate':'Advanced'}</small><div class="options">${current.options.map((o,i)=>`<button class="option" onclick="selectOption(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><br><button class="primary" onclick="submitQuiz()">${currentIndex===bank.length-1?'Submit Answer':'Check Answer'}</button><div id="quizResult"></div>`;
+}
+
+function nextQuestion(){ currentIndex++; renderQuestion(current.subject); }
+function selectOption(i){selected=i;document.querySelectorAll('.option').forEach((b,n)=>b.classList.toggle('selected',n===i))}
+function submitQuiz(){
+  const r=document.getElementById('quizResult');
+  if(selected===null){r.innerHTML='<div class="mistake">Please select an answer first.</div>';return}
+  const bank=questions[current.subject];
+  if(selected===current.answer){
+    quizScore++;
+    localStorage.setItem('floLastResult',JSON.stringify({correct:true,subject:current.subject,score:quizScore,total:bank.length}));
+    if(currentIndex<bank.length-1){
+      r.innerHTML='<div class="result"><b>Correct! 🎉</b><br>'+current.explanation+'<br><br><button class="primary" onclick="nextQuestion()">Next Question →</button></div>';
+    } else {
+      r.innerHTML='<div class="result"><b>Quiz Complete! 🏆</b><br>You scored <b>'+quizScore+'/'+bank.length+'</b> ('+Math.round(quizScore/bank.length*100)+'%).<br><br><button class="secondary" onclick="showPage(\"report\")">View My Report</button></div>';
+    }
+  } else {
+    localStorage.setItem('floLastMistake',JSON.stringify({type:current.type,question:current.q,subject:current.subject,answer:current.options[current.answer],selected:current.options[selected],explanation:current.explanation}));
+    r.innerHTML='<div class="mistake"><b>Let’s investigate the mistake 🔎</b><br>You selected <b>'+current.options[selected]+'</b>.<br><b>Likely pattern:</b> '+current.type+'.<br><b>Hint:</b> '+current.explanation+'<br><br><button class="secondary" onclick="showPage(\"mistakes\")">Open Mistake Analysis</button> <button class="secondary" onclick="showPage(\"ai\")">Ask Flo AI</button><br><br><button class="primary" onclick="currentIndex<bank.length-1 ? (currentIndex++,renderQuestion(current.subject)) : showPage(\"report\")">Continue →</button></div>';
+  }
+}
+
+function shareApp(){
+  const url=location.href;
+  if(navigator.share){
+    navigator.share({title:'FLO Spark Fusion 🔥',text:'Check out FLO Spark Fusion — a learning platform for students!',url}).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>showShareStatus('App link copied! 🔗')).catch(()=>showShareStatus(url));
+  } else {
+    prompt('Copy this link:',url);
+  }
+}
+function copyShareLink(){
+  const url=location.href;
+  if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>showShareStatus('Link copied! 🔗'));
+  else prompt('Copy this link:',url);
+}
+function showShareStatus(message){
+  const el=document.getElementById('shareStatus');
+  if(el) el.textContent=message;
+}
+
+function sendChat(){
+  const input=document.getElementById('chatInput'); const text=input.value.trim(); if(!text)return;
+  addBubble(text,'user'); input.value='';
+  setTimeout(()=>addBubble(floReply(text),'bot'),250);
+}
+function quickChat(t){document.getElementById('chatInput').value=t;sendChat()}
+function addBubble(t,c){const d=document.createElement('div');d.className='bubble '+c;d.textContent=t;const chat=document.getElementById('chat');chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function floReply(t){
+  const x=t.toLowerCase();
+  if(x.includes('hint')) return "💡 Hint: Start by identifying what the question is asking, then recall the rule or concept that applies. Try one step before checking the answer.";
+  if(x.includes('mistake')) return "🔎 Let's investigate it: check whether the issue came from calculation, the concept, the formula, interpretation, or missing knowledge. Re-read the question and compare your step with the rule.";
+  if(x.includes('example')) return "📝 Example: For 2x + 5 = 15, first remove 5 from both sides. Then divide by 2. The same two-step pattern works for similar equations.";
+  return "📘 I can help you understand it step by step. Tell me the subject and the part that is confusing you, and I'll give you a clue before the full explanation.";
+}
+function login(type){closeModal();alert(type==='Google'?'Google login is represented as a prototype button for now.':'Guest mode activated.');}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+// Expand every subject to 501 practice questions (500+), generated from safe curriculum-style templates.
+const FLO_ALL_SUBJECTS = [
+  "Mathematics","English Language","Biology","Chemistry","Physics","Agricultural Science","Computer Science",
+  "Economics","Government","Geography","Accounting","Commerce","Literature in English","History","CRS / IRS",
+  "AI, Vibing & Coding","CCP — Craft & Catering Practice","Content Creating","Cosmetology","Fashion & Fashion Designing"
+];
+const FLO_TOPICS = {
+  "Mathematics":["Number Processes","Fractions","Decimals","Percentages","Indices","Logarithms","Number Bases"],
+  "English Language":["Grammar","Comprehension","Vocabulary","Writing"],
+  "Biology":["Cell Biology","Nutrition","Living Things","Ecology"],
+  "Chemistry":["Matter","Atomic Structure","Chemical Reactions","Calculations"],
+  "Physics":["Mechanics","Optics","Electricity","Measurement"],
+  "Agricultural Science":["Crops","Soil","Farm Tools","Livestock"],
+  "Computer Science":["Computer Basics","Algorithms","Programming","Digital Skills"],
+  "Economics":["Scarcity","Demand & Supply","Production","Markets"],
+  "Government":["Constitution","Government Systems","Citizenship","Institutions"],
+  "Geography":["Map Reading","Physical Geography","Human Geography","Environment"],
+  "Accounting":["Accounting Concepts","Transactions","Ledger","Financial Records"],
+  "Commerce":["Trade","Business Units","Communication","Distribution"],
+  "Literature in English":["Prose","Poetry","Drama","Literary Devices"],
+  "History":["People & Events","Societies","Change Over Time","Historical Sources"],
+  "CRS / IRS":["Beliefs","Values","Traditions","Moral Lessons"],
+  "AI, Vibing & Coding":["Computational Thinking","Coding Basics","AI Concepts","Projects"],
+  "CCP — Craft & Catering Practice":["Craft","Food Safety","Cooking","Practical Skills"],
+  "Content Creating":["Content Planning","Writing","Video","Digital Publishing"],
+  "Cosmetology":["Hair Care","Skin Care","Beauty Skills","Safety"],
+  "Fashion & Fashion Designing":["Design","Fabrics","Measurements","Garment Making"]
+};
+function floMathQuestion(n){
+  const mode=n%7, a=(n*7)%40+2, b=(n*5)%30+1;
+  if(mode===0){ const x=(n%15)+1, c=x*2+5; return {q:`Solve: 2x + 5 = ${c}. What is x?`,options:[String(x),String(x+1),String(x+2),String(x-1)],answer:0,type:"Calculation Error",explanation:"Subtract 5 from both sides, then divide by 2.",topic:"Number Processes"}; }
+  if(mode===1){ const den=(n%8)+2, num=(n%den)+1; return {q:`Which fraction is equivalent to ${num}/${den}?`,options:[`${num*2}/${den*2}`,`${num+1}/${den}`,`${den}/${num}`,`${num}/${den+1}`],answer:0,type:"Concept Error",explanation:"Multiplying the numerator and denominator by the same non-zero number gives an equivalent fraction.",topic:"Fractions"}; }
+  if(mode===2){ const p=(n%8)+2, base=(n%7)+2; const val=base*p; return {q:`What is ${p}% of ${val*100/p}?`,options:[String(val),String(val+5),String(val-5),String(val*2)],answer:0,type:"Calculation Error",explanation:"Convert the percentage to a fraction over 100 and multiply.",topic:"Percentages"}; }
+  if(mode===3){ const e=(n%4)+2; return {q:`Simplify: 2^${e} × 2^2.`,options:[`2^${e+2}`,`2^${e}`,`2^${e*2}`,`4^${e}`],answer:0,type:"Formula Error",explanation:"When multiplying powers with the same base, add the indices.",topic:"Indices"}; }
+  if(mode===4){ const base=2+(n%3), exp=2+(n%4), val=Math.pow(base,exp); return {q:`What is log base ${base} of ${val}?`,options:[String(exp),String(base),String(val),String(exp+1)],answer:0,type:"Knowledge Gap",explanation:`${base}^${exp} = ${val}, so the logarithm is ${exp}.`,topic:"Logarithms"}; }
+  if(mode===5){ const binary=(n%7)+2; const bits=(binary%8).toString(2); const padded=bits.padStart(3,'0'); return {q:`Convert ${padded}₂ to base 10.`,options:[String(binary),String(binary+1),String(binary-1),String(binary+2)],answer:0,type:"Interpretation Error",explanation:`Use place values 4, 2 and 1 to convert the binary number.`,topic:"Number Bases"}; }
+  const val=(a/10).toFixed(1), sum=(a+b)/10; return {q:`What is ${val} + ${(b/10).toFixed(1)}?`,options:[sum.toFixed(1),(sum+1).toFixed(1),(sum-1).toFixed(1),(sum+0.5).toFixed(1)],answer:0,type:"Calculation Error",explanation:"Align the decimal places before adding.",topic:"Decimals"};
+}
+function floEnglishQuestion(n){
+  const topics=FLO_TOPICS["English Language"], mode=n%4;
+  if(mode===0){ const subject=n%2?'They':'She'; const verb=n%2?'are':'is'; return {q:`Choose the correct sentence.`,options:[`${subject} ${verb} ready.`,`${subject} ${verb==='is'?'are':'is'} ready.`,`They am ready.`,`She are ready.`],answer:0,type:"Concept Error",explanation:"Match the subject with the correct form of the verb.",topic:"Grammar"}; }
+  if(mode===1){ const words=[["rapid","fast","slow","late","weak"],["ancient","modern","new","future","young"],["assist","help","avoid","refuse","delay"]]; const w=words[n%words.length]; return {q:`Choose the word closest in meaning to '${w[0]}'.`,options:[w[1],w[2],w[3],w[4]],answer:0,type:"Knowledge Gap",explanation:`The correct synonym is ${w[1]}.`,topic:"Vocabulary"}; }
+  if(mode===2){ return {q:`Which skill is most important when answering a comprehension question?`,options:["Reading the passage carefully","Ignoring the passage","Guessing every answer","Copying unrelated words"],answer:0,type:"Interpretation Error",explanation:"Read the passage carefully and use evidence from it.",topic:"Comprehension"}; }
+  return {q:`Which is a good feature of formal writing?`,options:["Clear and appropriate language","Random abbreviations","No punctuation","Unrelated ideas"],answer:0,type:"Concept Error",explanation:"Formal writing should be clear, organised and appropriate for its audience.",topic:"Writing"};
+}
+function floGenericQuestion(subject,n){
+  const topics=FLO_TOPICS[subject]||["Introduction","Key Concepts","Practice","Revision"];
+  const topic=topics[n%topics.length], other1=topics[(n+1)%topics.length], other2=topics[(n+2)%topics.length], other3=topics[(n+3)%topics.length];
+  return {q:`Which topic is directly associated with ${subject}?`,options:[topic,other1,other2,other3],answer:0,type:"Knowledge Gap",explanation:`${topic} is one of the study areas for ${subject}. Review this topic for more practice.`,topic};
+}
+function expandFloQuestionBanks(){
+  FLO_ALL_SUBJECTS.forEach(subject=>{
+    if(!questions[subject]) questions[subject]=[];
+    const bank=questions[subject];
+    for(let n=bank.length;n<501;n++){
+      bank.push(subject==="Mathematics"?floMathQuestion(n):subject==="English Language"?floEnglishQuestion(n):floGenericQuestion(subject,n));
+    }
+  });
+}
+expandFloQuestionBanks();
+setTimeout(()=>{
+  const modal=document.getElementById('modal');
+  if(modal) modal.classList.remove('hidden');
+  const shareUrl=document.getElementById('shareUrl');
+  if(shareUrl) shareUrl.value=location.href;
+},500);
+</script>
+</body>
+</html>
